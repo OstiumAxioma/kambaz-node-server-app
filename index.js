@@ -17,15 +17,9 @@ const app = express();
 app.use(
     cors({
         credentials: true,
-        origin: (origin, callback) => {
-            // Allow requests from localhost on any port or no origin (for mobile apps)
-            if (!origin || origin.startsWith('http://localhost') || 
-                origin === process.env.NETLIFY_URL) {
-                callback(null, true);
-            } else {
-                callback(new Error('Not allowed by CORS'));
-            }
-        },
+        origin: true, // Temporarily allow all origins for debugging
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+        allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
     })
 );
 const sessionOptions = {
