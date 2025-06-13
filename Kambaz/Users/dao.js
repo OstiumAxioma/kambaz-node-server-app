@@ -1,16 +1,47 @@
-import db from "../Database/index.js";
+import model from "./model.js";
 import * as courseDao from "../Courses/dao.js";
 import { v4 as uuidv4 } from "uuid";
 
-export const createUser = (user) => {
+export const createUser = async (user) => {
     const newUser = { ...user, _id: uuidv4() };
-    db.users = [...db.users, newUser];
-    return newUser;
+    return await model.create(newUser);
 };
-export const findAllUsers = () => db.users;
-export const findUserById = (userId) => db.users.find((user) => user._id === userId);
-export const findUserByUsername = (username) => db.users.find((user) => user.username === username);
-export const findUserByCredentials = (username, password) =>
-    db.users.find( (user) => user.username === username && user.password === password );
-export const updateUser = (userId, user) => (db.users = db.users.map((u) => (u._id === userId ? user : u)));
-export const deleteUser = (userId) => (db.users = db.users.filter((u) => u._id !== userId));
+
+export const findAllUsers = async () => {
+    return await model.find().exec();
+};
+
+export const findUsersByRole = async (role) => {
+    console.log("DAO: Finding users with role:", role);
+    const users = await model.find({ role: role }).exec();
+    console.log("DAO: Found users:", users);
+    return users;
+};
+
+export const findUserById = async (userId) => {
+    return await model.findById(userId).exec();
+};
+
+export const findUserByUsername = async (username) => {
+    return await model.findOne({ username: username }).exec();
+};
+
+export const findUserByCredentials = async (username, password) => {
+    return await model.findOne({ username, password }).exec();
+};
+
+export const updateUser = async (userId, user) => {
+    return await model.updateOne({ _id: userId }, { $set: user }).exec();
+};
+
+export const deleteUser = async (userId) => {
+    return await model.deleteOne({ _id: userId }).exec();
+};
+
+export const findUsersByPartialName = (partialName) => {
+    const regex = new RegExp(partialName, "i"); // 'i' makes it case-insensitive
+    return model.find({
+      $or: [{ firstName: { $regex: regex } }, { lastName: { $regex: regex } }],
+    });
+  };
+
