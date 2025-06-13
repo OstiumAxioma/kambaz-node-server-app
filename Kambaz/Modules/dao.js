@@ -1,4 +1,5 @@
 import Database from "../Database/index.js";
+import model from "./model.js";
 
 export function updateModule(moduleId, moduleUpdates) {
   const { modules } = Database;
@@ -13,6 +14,20 @@ export function deleteModule(moduleId) {
 }
 
 export function findModulesForCourse(courseId) {
-  const { modules } = Database;
-  return modules.filter((module) => module.course === courseId);
+  return model.find({ course: courseId });
 } 
+
+export function createModule(module) {
+  const newModule = { ...module, _id: uuidv4() };
+  return model.create(newModule);
+}
+
+export function deleteModule(moduleId) {
+  return model.deleteOne({ _id: moduleId });
+}
+
+export function updateModule(moduleId, moduleUpdates) {
+  return model.updateOne({ _id: moduleId }, moduleUpdates);
+}
+ 
+ 
