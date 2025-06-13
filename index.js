@@ -75,6 +75,15 @@ app.use((req, res, next) => {
   next();
 });
 
+// Test inline modules route
+app.get("/api/modules/inline-test", (req, res) => {
+  res.json({ 
+    message: "Inline modules route working!", 
+    timestamp: new Date().toISOString(),
+    version: "inline-v1.0"
+  });
+});
+
 // Register routes - more specific routes first
 console.log("Registering /api/modules with moduleRoutes");
 app.use("/api/modules", moduleRoutes);  // Move modules to the top
