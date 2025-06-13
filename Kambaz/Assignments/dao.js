@@ -1,25 +1,51 @@
-import Database from "../Database/index.js";
+import assignmentModel from "./model.js";
 import { v4 as uuidv4 } from "uuid";
 
-export function findAssignmentsForCourse(courseId) {
-  const { assignments } = Database;
-  return assignments.filter((assignment) => assignment.course === courseId);
-}
+export const createAssignment = async (assignment) => {
+  try {
+    const newAssignment = { ...assignment, _id: uuidv4() };
+    return await assignmentModel.create(newAssignment);
+  } catch (error) {
+    console.error("Error in createAssignment:", error);
+    throw error;
+  }
+};
 
-export function createAssignment(assignment) {
-  const newAssignment = { ...assignment, _id: uuidv4() };
-  Database.assignments = [...Database.assignments, newAssignment];
-  return newAssignment;
-}
+export const findAssignmentsForCourse = async (courseId) => {
+  try {
+    return await assignmentModel.find({ course: courseId });
+  } catch (error) {
+    console.error("Error in findAssignmentsForCourse:", error);
+    throw error;
+  }
+};
 
-export function deleteAssignment(assignmentId) {
-  const { assignments } = Database;
-  Database.assignments = assignments.filter((assignment) => assignment._id !== assignmentId);
-}
+export const findAssignmentById = async (assignmentId) => {
+  try {
+    return await assignmentModel.findById(assignmentId);
+  } catch (error) {
+    console.error("Error in findAssignmentById:", error);
+    throw error;
+  }
+};
 
-export function updateAssignment(assignmentId, assignmentUpdates) {
-  const { assignments } = Database;
-  const assignment = assignments.find((assignment) => assignment._id === assignmentId);
-  Object.assign(assignment, assignmentUpdates);
-  return assignment;
-} 
+export const updateAssignment = async (assignmentId, assignmentUpdates) => {
+  try {
+    return await assignmentModel.updateOne(
+      { _id: assignmentId },
+      { $set: assignmentUpdates }
+    );
+  } catch (error) {
+    console.error("Error in updateAssignment:", error);
+    throw error;
+  }
+};
+
+export const deleteAssignment = async (assignmentId) => {
+  try {
+    return await assignmentModel.deleteOne({ _id: assignmentId });
+  } catch (error) {
+    console.error("Error in deleteAssignment:", error);
+    throw error;
+  }
+}; 

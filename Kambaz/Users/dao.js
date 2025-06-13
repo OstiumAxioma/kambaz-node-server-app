@@ -45,3 +45,24 @@ export const findUsersByPartialName = (partialName) => {
     });
 };
 
+export const isAuthenticated = (req, res, next) => {
+  if (req.session.currentUser) {
+    next();
+  } else {
+    res.status(401).json({ message: "You must be logged in to perform this action" });
+  }
+};
+
+export const isInstructor = (req, res, next) => {
+  if (req.session.currentUser && 
+      (req.session.currentUser.role === "FACULTY" || 
+       req.session.currentUser.role === "ADMIN")) {
+    next();
+  } else {
+    res.status(403).json({ 
+      message: "You must be a faculty member or administrator to perform this action",
+      currentRole: req.session.currentUser?.role
+    });
+  }
+};
+
