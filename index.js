@@ -66,7 +66,14 @@ app.use(session(sessionOptions));
   
 app.use(express.json());
 
-// Register routes
+// Add debug middleware to log all requests
+app.use((req, res, next) => {
+  console.log(`${new Date().toISOString()} - ${req.method} ${req.originalUrl}`);
+  next();
+});
+
+// Register routes - more specific routes first
+app.use("/api/modules", moduleRoutes);  // Move modules to the top
 app.use("/api", Hello);
 app.use("/api", Lab5);
 app.use("/api", PathParameters);
@@ -77,7 +84,6 @@ app.use("/api", userRoutes);
 app.use("/api", courseRoutes);
 app.use("/api", enrollmentRoutes);
 app.use("/api", assignmentRoutes);
-app.use("/api/modules", moduleRoutes);
 
 // Add request logging middleware
 app.use((req, res, next) => {
