@@ -5,7 +5,7 @@ import { isAuthenticated, isInstructor } from "../Users/dao.js";
 const router = express.Router();
 
 // Get all modules for a course
-router.get("/:courseId/modules", async (req, res) => {
+router.get("/courses/:courseId/modules", async (req, res) => {
   try {
     const { courseId } = req.params;
     console.log("Finding modules for course:", courseId);
@@ -18,23 +18,8 @@ router.get("/:courseId/modules", async (req, res) => {
   }
 });
 
-// Get a specific module
-router.get("/:moduleId", async (req, res) => {
-  try {
-    const { moduleId } = req.params;
-    const module = await modulesDao.findModuleById(moduleId);
-    if (!module) {
-      return res.status(404).json({ message: "Module not found" });
-    }
-    res.json(module);
-  } catch (error) {
-    console.error("Error finding module:", error);
-    res.status(500).json({ message: "Error finding module" });
-  }
-});
-
 // Create a new module (instructor only)
-router.post("/:courseId/modules", isAuthenticated, isInstructor, async (req, res) => {
+router.post("/courses/:courseId/modules", isAuthenticated, isInstructor, async (req, res) => {
   try {
     const { courseId } = req.params;
     console.log("Creating module with data:", { ...req.body, course: courseId });
@@ -61,6 +46,21 @@ router.post("/:courseId/modules", isAuthenticated, isInstructor, async (req, res
       message: "Error creating module", 
       details: error.message 
     });
+  }
+});
+
+// Get a specific module
+router.get("/:moduleId", async (req, res) => {
+  try {
+    const { moduleId } = req.params;
+    const module = await modulesDao.findModuleById(moduleId);
+    if (!module) {
+      return res.status(404).json({ message: "Module not found" });
+    }
+    res.json(module);
+  } catch (error) {
+    console.error("Error finding module:", error);
+    res.status(500).json({ message: "Error finding module" });
   }
 });
 
