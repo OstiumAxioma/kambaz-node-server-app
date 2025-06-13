@@ -15,6 +15,9 @@ import moduleRoutes from "./Kambaz/Modules/routes.js";
 import assignmentRoutes from "./Kambaz/Assignments/routes.js";
 import cors from "cors";
 
+console.log("Loading moduleRoutes:", typeof moduleRoutes);
+console.log("moduleRoutes:", moduleRoutes);
+
 const CONNECTION_STRING = process.env.MONGO_CONNECTION_STRING || "mongodb://127.0.0.1:27017/kambaz";
 
 // MongoDB connection with error handling
@@ -73,7 +76,9 @@ app.use((req, res, next) => {
 });
 
 // Register routes - more specific routes first
+console.log("Registering /api/modules with moduleRoutes");
 app.use("/api/modules", moduleRoutes);  // Move modules to the top
+console.log("Module routes registered successfully");
 app.use("/api", Hello);
 app.use("/api", Lab5);
 app.use("/api", PathParameters);
