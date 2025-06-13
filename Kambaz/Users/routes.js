@@ -1,8 +1,19 @@
 import * as dao from "./dao.js";
 import * as courseDao from "../Courses/dao.js";
 export default function UserRoutes(app) {
-    const createUser = async (req, res) => { };
-    const deleteUser = async (req, res) => { };
+    const createUser = async (req, res) => {
+        try {
+            const user = await dao.createUser(req.body);
+            res.json(user);
+        } catch (error) {
+            console.error("Error creating user:", error);
+            res.status(500).json({ message: "Error creating user" });
+        }
+    };
+    const deleteUser = async (req, res) => {
+        const status = await dao.deleteUser(req.params.userId);
+        res.json(status);  
+    };
     const findAllUsers = async (req, res) => {
         const { role, name } = req.query;
         console.log("Finding users with role:", role); // Debug log
@@ -25,8 +36,11 @@ export default function UserRoutes(app) {
         const userId = req.params.userId;
         const userUpdates = req.body;
         await dao.updateUser(userId, userUpdates);
-        const currentUser = await dao.findUserById(userId);
-        req.session["currentUser"] = currentUser;
+        const currentUser = req.session["currentUser"];
+        if (currentUser && currentUser._id === userId) {
+            req.session["currentUser"] = { ...currentUser, ...userUpdates };
+        }       
+        // req.session["currentUser"] = currentUser;
         res.json(currentUser);
     };
     const signup = async (req, res) => {
