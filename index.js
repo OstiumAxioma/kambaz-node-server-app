@@ -74,10 +74,10 @@ app.use("/api", QueryParameters);
 app.use("/api", WorkingWithObjects);
 app.use("/api", WorkingWithArrays);
 app.use("/api", userRoutes);
-app.use("/api/modules", moduleRoutes);
 app.use("/api", courseRoutes);
 app.use("/api", enrollmentRoutes);
 app.use("/api", assignmentRoutes);
+app.use("/api/modules", moduleRoutes);
 
 // Add request logging middleware
 app.use((req, res, next) => {
