@@ -4,11 +4,14 @@ import { isAuthenticated, isInstructor } from "../Users/dao.js";
 
 const router = express.Router();
 
+console.log("Module routes loaded - v2.0");
+
 // Get all modules for a course
 router.get("/courses/:courseId/modules", async (req, res) => {
   try {
     const { courseId } = req.params;
     console.log("Finding modules for course:", courseId);
+    console.log("Route matched: /courses/:courseId/modules");
     const modules = await modulesDao.findModulesForCourse(courseId);
     console.log("Found modules:", modules);
     res.json(modules);
