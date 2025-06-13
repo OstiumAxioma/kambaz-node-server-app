@@ -6,6 +6,15 @@ const router = express.Router();
 
 console.log("Module routes loaded - v2.0");
 
+// Test route to verify deployment
+router.get("/test", (req, res) => {
+  res.json({ 
+    message: "Modules routes are working!", 
+    timestamp: new Date().toISOString(),
+    version: "v2.0"
+  });
+});
+
 // Get all modules for a course
 router.get("/courses/:courseId/modules", async (req, res) => {
   try {
