@@ -100,6 +100,31 @@ app.get("/api/modules/inline-test", (req, res) => {
   });
 });
 
+// Test with completely different path
+app.get("/api/test-modules-alternative", (req, res) => {
+  console.log("=== ALTERNATIVE TEST ROUTE HIT ===");
+  res.json({ 
+    message: "Alternative modules route working!", 
+    timestamp: new Date().toISOString(),
+    version: "alternative-v1.0"
+  });
+});
+
+// Test the actual modules endpoint directly
+app.get("/api/modules/courses/:courseId/modules", async (req, res) => {
+  console.log("=== DIRECT MODULES ROUTE HIT ===");
+  console.log("CourseId:", req.params.courseId);
+  try {
+    // Import the DAO directly here to bypass any module loading issues
+    const { findModulesForCourse } = await import("./Kambaz/Modules/dao.js");
+    const modules = await findModulesForCourse(req.params.courseId);
+    res.json(modules);
+  } catch (error) {
+    console.error("Direct route error:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Register other routes
 app.use("/api", Hello);
 app.use("/api", Lab5);
