@@ -15,10 +15,6 @@ import moduleRoutes from "./Kambaz/Modules/routes.js";
 import assignmentRoutes from "./Kambaz/Assignments/routes.js";
 import cors from "cors";
 
-console.log("=== SERVER STARTUP DEBUG ===");
-console.log("Loading moduleRoutes:", typeof moduleRoutes);
-console.log("moduleRoutes keys:", Object.keys(moduleRoutes || {}));
-
 const CONNECTION_STRING = process.env.MONGO_CONNECTION_STRING || "mongodb://127.0.0.1:27017/kambaz";
 
 // MongoDB connection with error handling
@@ -70,62 +66,8 @@ app.use(session(sessionOptions));
   
 app.use(express.json());
 
-// Add comprehensive debug middleware
-app.use((req, res, next) => {
-  console.log(`=== REQUEST DEBUG ===`);
-  console.log(`${new Date().toISOString()} - ${req.method} ${req.originalUrl}`);
-  console.log(`Headers:`, req.headers);
-  console.log(`Body:`, req.body);
-  next();
-});
-
-// MODULES ROUTES FIRST - HIGHEST PRIORITY
-console.log("=== REGISTERING MODULES ROUTES ===");
-if (moduleRoutes) {
-  console.log("moduleRoutes is valid, registering...");
-  app.use("/api/modules", moduleRoutes);
-  console.log("✅ Module routes registered at /api/modules");
-} else {
-  console.error("❌ moduleRoutes is null or undefined!");
-}
-
-// Test inline modules route as backup
-app.get("/api/modules/inline-test", (req, res) => {
-  console.log("=== INLINE TEST ROUTE HIT ===");
-  res.json({ 
-    message: "Inline modules route working!", 
-    timestamp: new Date().toISOString(),
-    version: "inline-v2.0",
-    environment: process.env.NODE_ENV || "development"
-  });
-});
-
-// Test with completely different path
-app.get("/api/test-modules-alternative", (req, res) => {
-  console.log("=== ALTERNATIVE TEST ROUTE HIT ===");
-  res.json({ 
-    message: "Alternative modules route working!", 
-    timestamp: new Date().toISOString(),
-    version: "alternative-v1.0"
-  });
-});
-
-// Test the actual modules endpoint directly
-app.get("/api/modules/courses/:courseId/modules", async (req, res) => {
-  console.log("=== DIRECT MODULES ROUTE HIT ===");
-  console.log("CourseId:", req.params.courseId);
-  try {
-    // Import the DAO directly here to bypass any module loading issues
-    const { findModulesForCourse } = await import("./Kambaz/Modules/dao.js");
-    const modules = await findModulesForCourse(req.params.courseId);
-    res.json(modules);
-  } catch (error) {
-    console.error("Direct route error:", error);
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// Register other routes
+// Register routes - modules first to avoid conflicts
+app.use("/api/modules", moduleRoutes);
 app.use("/api", Hello);
 app.use("/api", Lab5);
 app.use("/api", PathParameters);
@@ -139,27 +81,22 @@ app.use("/api", assignmentRoutes);
 
 // Add request logging middleware
 app.use((req, res, next) => {
-  console.log(`FALLTHROUGH: ${req.method} ${req.originalUrl}`);
+  console.log(`${req.method} ${req.originalUrl}`);
   next();
 });
 
 // Add a catch-all route for undefined routes
 app.use((req, res) => {
-  console.log("=== ROUTE NOT FOUND ===");
-  console.log("Method:", req.method);
-  console.log("URL:", req.originalUrl);
-  console.log("Headers:", req.headers);
+  console.log("Route not found:", req.method, req.originalUrl);
   res.status(404).json({ 
     message: "Route not found",
     path: req.originalUrl,
-    method: req.method,
-    timestamp: new Date().toISOString()
+    method: req.method
   });
 });
 
 // Error handling middleware
 app.use((err, req, res, next) => {
-  console.error("=== ERROR HANDLER ===");
   console.error("Error:", err);
   console.error("Stack:", err.stack);
   res.status(500).json({ 
@@ -170,8 +107,5 @@ app.use((err, req, res, next) => {
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
-  console.log(`=== SERVER STARTED ===`);
   console.log(`Server is running on port ${PORT}`);
-  console.log(`Environment: ${process.env.NODE_ENV || "development"}`);
-  console.log(`MongoDB: ${CONNECTION_STRING}`);
 });
