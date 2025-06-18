@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+<<<<<<< HEAD
 
 const lessonSchema = new mongoose.Schema({
   _id: { type: String, required: true },
@@ -22,3 +23,15 @@ const moduleSchema = new mongoose.Schema(
 );
 
 export default moduleSchema;
+=======
+const schema = new mongoose.Schema(
+  {
+    _id: String,
+    name: String,
+    description: String,
+    course: { type: String, ref: "CourseModel" },
+  },
+  { collection: "modules" }
+);
+export default schema;
+>>>>>>> 7c58aaf (a6 commit)
