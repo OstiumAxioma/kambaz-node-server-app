@@ -85,7 +85,6 @@ router.delete("/:moduleId", isAuthenticated, isInstructor, async (req, res) => {
   try {
     const { moduleId } = req.params;
     const status = await modulesDao.deleteModule(moduleId);
-<<<<<<< HEAD
     if (status.deletedCount === 0) {
       return res.status(404).json({ message: "Module not found" });
     }
@@ -96,9 +95,4 @@ router.delete("/:moduleId", isAuthenticated, isInstructor, async (req, res) => {
   }
 });
 
-export default router; 
-=======
-    res.send(status);
-  }); 
-} 
->>>>>>> 7c58aaf (a6 commit)
+export default router;

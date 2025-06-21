@@ -1,10 +1,5 @@
-<<<<<<< HEAD
 import model from "./model.js";
 import { v4 as uuidv4 } from "uuid";
-=======
-import Database from "../Database/index.js";
-import model from "./model.js";
->>>>>>> 7c58aaf (a6 commit)
 
 export const findModulesForCourse = async (courseId) => {
   try {
@@ -24,7 +19,6 @@ export const findModuleById = async (moduleId) => {
   }
 };
 
-<<<<<<< HEAD
 export const createModule = async (module) => {
   try {
     const newModule = { ...module, _id: uuidv4() };
@@ -55,23 +49,5 @@ export const updateModule = async (moduleId, moduleUpdates) => {
     throw error;
   }
 };
-=======
-export function findModulesForCourse(courseId) {
-  return model.find({ course: courseId });
-} 
-
-export function createModule(module) {
-  const newModule = { ...module, _id: uuidv4() };
-  return model.create(newModule);
-}
-
-export function deleteModule(moduleId) {
-  return model.deleteOne({ _id: moduleId });
-}
-
-export function updateModule(moduleId, moduleUpdates) {
-  return model.updateOne({ _id: moduleId }, moduleUpdates);
-}
->>>>>>> 7c58aaf (a6 commit)
  
  
