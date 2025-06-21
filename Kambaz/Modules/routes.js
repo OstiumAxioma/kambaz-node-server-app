@@ -4,7 +4,7 @@ import { isAuthenticated, isInstructor } from "../Users/dao.js";
 
 const router = express.Router();
 
-// Get all modules for a course
+// Get all modules for a course (must come before /:moduleId)
 router.get("/courses/:courseId/modules", async (req, res) => {
   try {
     const { courseId } = req.params;
@@ -49,7 +49,7 @@ router.post("/courses/:courseId/modules", isAuthenticated, isInstructor, async (
   }
 });
 
-// Get a specific module
+// Get a specific module (must come after courses routes)
 router.get("/:moduleId", async (req, res) => {
   try {
     const { moduleId } = req.params;
